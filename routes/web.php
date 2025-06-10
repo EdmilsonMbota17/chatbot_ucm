@@ -1,0 +1,80 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AutenticacaoController;
+use App\Http\Controllers\ConfiguracaoController;
+use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\DeepseekController;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\PerguntaDocumentoController;
+use App\Http\Controllers\DocenteController;
+
+Route::get('/chat', function () {
+    return view('conversa.index');
+});
+
+
+Route::get('/', [AutenticacaoController::class, 'index']);
+
+Route::post('autenticar', [AutenticacaoController::class, 'autenticar']);
+
+
+
+// Rota para a página de perfil/configurações
+Route::get('/perfil', [ConfiguracaoController::class, 'index'])->name('perfil');
+
+
+// Rotas para alterar senha
+Route::get('/perfil/alterar-senha', function () {
+    return view('configuracao.alterarpass'); // Nome da sua view
+})->name('alterar.senha.form'); // Página do formulário
+Route::post('/alterar-senha', [ConfiguracaoController::class, 'alterarSenha'])->name('alterar.senha'); // Processamento
+
+// Rotas para alterar foto de perfil
+Route::get('/perfil/alterar-foto', function () {
+    return view('configuracao.alterarperfil'); // Nome da sua view
+})->name('alterar.foto.form'); // Página do formulário
+Route::post('/alterar-foto', [ConfiguracaoController::class, 'alterarFotoPerfil'])->name('alterar.foto'); // Processamento
+
+// Rotas para alterar tema
+Route::get('/perfil/alterar-tema', function () {
+    return view('configuracao.alterartema');
+})->name('alterar.tema.form'); // Página do formulário
+Route::post('/alterar-tema', [ConfiguracaoController::class, 'alterarTema'])->name('alterar.tema'); // Processamento
+
+Route::get('/ask-deepseek', function () {
+   // Em seu código:
+$result = (new DeepseekController)->askDeepSeek("Explique em poucas palavras sobre o livro de Matheus");
+
+if (isset($result['success'])) {
+    echo $result['answer']; // Resposta da AI
+    print_r($result['usage']); // Tokens usados
+} else {
+    echo "Erro: " . $result['error'];
+
+}
+});
+Route::post('/documento/{id}/perguntar', [PerguntaDocumentoController::class, 'perguntar']);
+
+Route::post('/upload-pdf', [DocumentController::class, 'store'])->name('document.upload');
+
+Route::post('/chate', [ChatController::class, 'sendMessage']);
+Route::get('/chat/history', [ChatController::class, 'getHistory']);
+
+Route::post('/documento/{documentId}/perguntar', [DeepseekController::class, 'perguntarSobreDocumento']);
+Route::apiResource('documents', DocumentController::class)->except(['update']);
+Route::post('/documents/{document}/query', [DocumentController::class, 'query']);
+Route::get('/documento/pesquisar', [DocumentController::class, 'search']);
+
+Route::get('/recuperar-senha', function () {
+    return view('recuperarsenha.recuperarSenha');
+});
+Route::post('/verificar-recuperacao', [UsuarioController::class, 'verificarRecuperacao']);
+
+Route::get('/documents/{id}', [DocumentController::class, 'show']);
+Route::post('/docenteautentica', [AutenticacaoController::class, 'autenticardocente']);
+Route::get('/docentelogin', [AutenticacaoController::class, 'indexdocente']);
+Route::get('/chatdocente', function () {
+    return view('conversadocente.index');
+});
