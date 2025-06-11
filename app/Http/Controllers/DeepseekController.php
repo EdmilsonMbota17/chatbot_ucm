@@ -32,13 +32,12 @@ class DeepseekController extends Controller
 
             if ($response->successful()) {
                 $apiResponse = $response->json();
-
                 $answer = $apiResponse['choices'][0]['message']['content'] ?? 'Sem resposta';
 
                 return [
                     'success' => true,
                     'answer' => $answer,
-                    'usage' => $apiResponse['usage'], // tokens consumidos
+                    'usage' => $apiResponse['usage'] ?? [],
                     'full_response' => $apiResponse
                 ];
             }
@@ -47,13 +46,6 @@ class DeepseekController extends Controller
             return [
                 'error' => 'Erro na API',
                 'details' => $response->json() ?? $response->body()
-            ];
-
-        } catch (\Illuminate\Http\Client\ConnectionException $e) {
-            Log::error('Timeout Deepseek: ' . $e->getMessage());
-            return [
-                'error' => 'Timeout',
-                'solution' => 'Tente novamente com uma mensagem mais curta'
             ];
 
         } catch (\Exception $e) {

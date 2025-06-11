@@ -152,6 +152,21 @@
                 left: 20px;
                 width: calc(100% - 40px);
             }
+        /* Mensagem de status */
+        #upload-status {
+            margin-left: 270px;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .text-success {
+            color: green;
+        }
+        .text-danger {
+            color: red;
+        }
+
         }
     </style>
 </head>
@@ -193,24 +208,22 @@
 </div>
 
 <!-- Meta CSRF para AJAX -->
- {{-- <meta name="csrf-token" content="{{ csrf_token() }}">
+  {{-- <meta name="csrf-token" content="{{ csrf_token() }}">
 
 <!-- Formulário e Botão de Upload -->
-   <div class="input-group" id="input-group">
+<div class="input-group" id="input-group">
     <!-- Botão de Upload -->
-    <label for="pdf-upload" class="btn btn-outline-primary me-2">
-        📎 Carregar PDF
-    </label>
+    <label for="pdf-upload" class="btn btn-outline-primary me-2">📎 Carregar PDF</label>
     <input type="file" id="pdf-upload" name="document" accept="application/pdf" style="display: none;" onchange="uploadPdf(this)">
 
-    <!-- Campo de Mensagem (opcional para perguntas) -->
+    <!-- Campo de Mensagem -->
     <textarea class="form-control" id="user-input" placeholder="Digite sua mensagem..." aria-label="Mensagem"></textarea>
 
-    <!-- Botão Enviar (opcional) -->
+    <!-- Botão Enviar -->
     <button class="btn btn-primary" type="button" onclick="sendMessage()">Enviar</button>
 </div>
 
-<!-- Feedback visual -->
+<!-- Feedback visual do upload -->
 <div id="upload-status" class="mt-2 text-info" style="display:none;">Enviando PDF...</div> --}}
 
 
@@ -220,39 +233,48 @@
 <script>
 let documentoId = null;
 
-    function uploadPdf(input) {
-        const file = input.files[0];
-        if (!file) return;
+function uploadPdf(input) {
+    const file = input.files[0];
+    if (!file) return;
 
-        const formData = new FormData();
-        formData.append('document', file);
+    const formData = new FormData();
+    formData.append('document', file);
 
-        // Mostra feedback visual
-        document.getElementById('upload-status').style.display = 'block';
-        document.getElementById('upload-status').innerText = 'Enviando PDF...';
+    const uploadStatus = document.getElementById('upload-status');
+    uploadStatus.style.display = 'block';
+    uploadStatus.innerText = 'Enviando PDF...';
+    uploadStatus.className = 'mt-2 text-info';
 
-        fetch('/upload-pdf', {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            },
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('upload-status').innerText = data.message || 'Upload completo!';
-            console.log('Resposta:', data);
-            if (data.documento_id) {
-        documentoId = data.documento_id;  // <-- Salva o ID para usar depois
-    }
-        })
-        .catch(error => {
-            document.getElementById('upload-status').innerText = 'Erro ao enviar o PDF.';
-            console.error('Erro:', error);
-        });
-
-
-    }
+    fetch('/upload-pdf', {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        },
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) throw new Error("Erro na resposta do servidor.");
+        return response.json();
+    })
+    .then(data => {
+        if (data.message) {
+            uploadStatus.innerText = data.message;
+            uploadStatus.className = 'mt-2 text-success';
+        } else {
+            uploadStatus.innerText = 'Documento enviado com sucesso!';
+            uploadStatus.className = 'mt-2 text-success';
+        }
+        console.log('Resposta:', data);
+        if (data.documento_id) {
+            documentoId = data.documento_id;
+        }
+    })
+    .catch(error => {
+        uploadStatus.innerText = 'Falha ao enviar o documento.';
+        uploadStatus.className = 'mt-2 text-danger';
+        console.error('Erro:', error);
+    });
+}
     function sendMessage() {
     const pergunta = document.getElementById("user-input").value;
 

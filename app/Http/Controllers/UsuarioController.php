@@ -24,6 +24,7 @@ class UsuarioController extends Controller
             'email' => 'required|email|unique:usuario',
             'senha' => 'required|min:6',
         ]);
+        dd($request->all());
 
         Usuario::create([
             'email' => $request->email,

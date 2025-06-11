@@ -7,28 +7,26 @@ use App\Models\Document;
 
 class PerguntaDocumentoController extends Controller
 {
-    public function perguntar(Request $request, $documentId)
+    public function perguntar(Request $request)
     {
-        // Busca o documento no banco
-        $document = Document::find($documentId);
-
-        if (!$document) {
-            return response()->json(['error' => 'Documento não encontrado.'], 404);
-        }
-
         $pergunta = $request->input('pergunta');
 
         if (!$pergunta || trim($pergunta) === '') {
             return response()->json(['error' => 'Por favor, digite uma pergunta.'], 400);
         }
 
-        $contexto = $document->text_content;
+        $documentos = Document::all();
 
-        if (empty($contexto)) {
-            return response()->json(['error' => 'O conteúdo do documento está vazio.'], 422);
+        if ($documentos->isEmpty()) {
+            return response()->json(['error' => 'Nenhum documento encontrado no banco de dados.'], 404);
         }
 
-        // Envia para o DeepseekController processar a pergunta
+        $contexto = $documentos->pluck('text_content')->implode("\n\n");
+
+        if (empty($contexto)) {
+            return response()->json(['error' => 'O conteúdo dos documentos está vazio.'], 422);
+        }
+
         $resposta = app(DeepseekController::class)->askDeepSeek("Com base nesse conteúdo: \n$contexto\n\nPergunta: $pergunta");
 
         return response()->json([
@@ -36,4 +34,7 @@ class PerguntaDocumentoController extends Controller
         ]);
     }
 }
+
+
+
 
