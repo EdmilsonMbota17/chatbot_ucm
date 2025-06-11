@@ -36,7 +36,7 @@
 
                 <div class="mb-3">
                     <label for="pergunta" class="form-label">Pergunta de segurança</label>
-                    <select name="pergunta" class="form-select" required>
+                    <select name="pergunta_recuperacao" class="form-select" required>
                         <option value="">Selecione uma pergunta</option>
                         <option value="pet">Qual o nome do seu primeiro animal de estimação?</option>
                         <option value="mae">Qual o nome da sua mãe?</option>
@@ -46,7 +46,7 @@
 
                 <div class="mb-3">
                     <label for="resposta" class="form-label">Resposta</label>
-                    <input type="text" name="resposta" class="form-control" required>
+                    <input type="text" name="resposta_recuperacao" class="form-control" required>
                 </div>
 
                 <button type="submit" class="btn btn-primary w-100">Verificar</button>

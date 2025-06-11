@@ -42,27 +42,25 @@ class UsuarioController extends Controller
     }
 
     public function verificarRecuperacao(Request $request)
-{
-    dd($request->all());
-    $usuario = Usuario::where('email', trim($request->email))->first();
+    {
+        // Debug inicial
+       // Verifique se os dados estão chegando corretamente
 
-    if (!$usuario) {
-        return back()->with('error', 'Usuário não encontrado.');
+        $usuario = Usuario::where('email', trim($request->email))->first();
+
+        if ($usuario->pergunta_recuperacao !== $request->pergunta_recuperacao) {
+            return back()->with('error', 'Pergunta de segurança incorreta.');
+        }
+
+        if (!Hash::check($request->resposta_recuperacao, $usuario->resposta_recuperacao)) {
+            return back()->with('error', 'Resposta incorreta.');
+        }
+
+
+        if (!Hash::check($request->resposta_recuperacao, $usuario->resposta_recuperacao)) {
+            return back()->with('error', 'Resposta incorreta.');
+        }
+
+        return redirect()->route('alterarSenha', ['email' => $usuario->email]);
     }
-
-    // Verifica se a pergunta bate com a cadastrada
-    if ($usuario->pergunta_recuperacao !== $request->pergunta) {
-        return back()->with('error', 'Pergunta de segurança incorreta.');
-    }
-
-    // Verifica se a resposta está correta
-    if (!Hash::check($request->resposta, $usuario->resposta_recuperacao)) {
-        return back()->with('error', 'Resposta incorreta.');
-    }
-
-    // Tudo certo: redireciona para página de redefinição de senha
-    return redirect()->route('alterarSenha', ['email' => $usuario->email]);
-
-
-}
 }

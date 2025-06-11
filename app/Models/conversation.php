@@ -4,8 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class conversation extends Model
+class Conversation extends Model
 {
     protected $table = 'conversations';
-    public $timestamps = false;
+
+    protected $fillable = [
+        'usuario_id',
+        'user_message',
+        'ai_response'
+    ];
 }
+
