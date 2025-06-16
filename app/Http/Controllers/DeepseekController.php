@@ -1,60 +1,41 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
+use App\Services\DeepSeekService;
 
-class DeepseekController extends Controller
+class ChatController extends Controller
 {
-    private const API_URL = 'https://api.deepseek.com/v1/chat/completions';
-    private const TIMEOUT_SECONDS = 30;
+    protected $deepSeek;
 
-    public function askDeepSeek(string $userMessage): array
+    public function __construct(DeepSeekService $deepSeek)
     {
-        if (empty($userMessage)) {
-            return ['error' => 'A mensagem não pode estar vazia.'];
+        $this->deepSeek = $deepSeek;
+    }
+
+    public function chat(Request $request)
+    {
+        $request->validate([
+            'message' => 'required|string',
+        ]);
+
+        $message = $request->input('message');
+
+        $result = $this->deepSeek->chat($message);
+
+        if (isset($result['error'])) {
+            return response()->json([
+                'error' => $result['error'],
+                'details' => $result['details'] ?? null,
+            ], 500);
         }
 
-        try {
-            $response = Http::timeout(self::TIMEOUT_SECONDS)
-                ->withHeaders([
-                    'Authorization' => 'Bearer ' . env('DEEPSEEK_API_KEY'),
-                    'Content-Type' => 'application/json',
-                ])
-                ->post(self::API_URL, [
-                    'model' => 'deepseek-chat',
-                    'messages' => [
-                        ['role' => 'user', 'content' => $userMessage]
-                    ],
-                    'temperature' => 0.7,
-                ]);
-
-            if ($response->successful()) {
-                $apiResponse = $response->json();
-                $answer = $apiResponse['choices'][0]['message']['content'] ?? 'Sem resposta';
-
-                return [
-                    'success' => true,
-                    'answer' => $answer,
-                    'usage' => $apiResponse['usage'] ?? [],
-                    'full_response' => $apiResponse
-                ];
-            }
-
-            Log::error('Erro na API Deepseek', ['response' => $response->body()]);
-            return [
-                'error' => 'Erro na API',
-                'details' => $response->json() ?? $response->body()
-            ];
-
-        } catch (\Exception $e) {
-            Log::error('Erro inesperado Deepseek: ' . $e->getMessage());
-            return [
-                'error' => 'Erro interno',
-                'details' => $e->getMessage()
-            ];
-        }
+        return response()->json([
+            'response' => $result['answer'],
+            'usage' => $result['usage'] ?? [],
+        ]);
     }
 }
+
+
 

@@ -208,10 +208,10 @@
 </div>
 
 <!-- Meta CSRF para AJAX -->
-  {{-- <meta name="csrf-token" content="{{ csrf_token() }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 
 <!-- Formulário e Botão de Upload -->
-<div class="input-group" id="input-group">
+{{-- <div class="input-group" id="input-group">
     <!-- Botão de Upload -->
     <label for="pdf-upload" class="btn btn-outline-primary me-2">📎 Carregar PDF</label>
     <input type="file" id="pdf-upload" name="document" accept="application/pdf" style="display: none;" onchange="uploadPdf(this)">

@@ -26,8 +26,5 @@ class Usuario extends Model
     ];
 
 
-    public function setSenhaAttribute($value)
-    {
-        $this->attributes['senha'] = bcrypt($value);
-    }
+
 }

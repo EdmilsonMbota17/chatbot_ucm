@@ -9,6 +9,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\PerguntaDocumentoController;
 use App\Http\Controllers\DocenteController;
+use App\Http\Controllers\SenhaController;
 
 Route::get('/chat', function () {
     return view('conversa.index');
@@ -67,8 +68,32 @@ Route::apiResource('documents', DocumentController::class)->except(['update']);
 Route::post('/documents/{document}/query', [DocumentController::class, 'query']);
 Route::get('/documento/pesquisar', [DocumentController::class, 'search']);
 
+// Mostrar o formulário de cadastro
+Route::get('/criar-conta', function () {
+    return view('criar-conta.criarconta');
+})->name('criar-conta');
+
+
+
+// Processar o envio do formulário de cadastro
+Route::get('recuperar-senha', [SenhaController::class, 'formEmail'])->name('senha.email');
+Route::post('recuperar-senha', [SenhaController::class, 'verificarEmail'])->name('senha.verificarEmail');
+
+Route::get('responder-pergunta/{id}', [SenhaController::class, 'formPergunta'])->name('senha.pergunta');
+Route::post('responder-pergunta/{id}', [SenhaController::class, 'verificarResposta'])->name('senha.verificarResposta');
+
+Route::get('redefinir-senha/{id}', [SenhaController::class, 'mostrarFormularioRedefinicao'])->name('senha.redefinir');
+Route::post('redefinir-senha/{id}', [SenhaController::class, 'atualizarSenha'])->name('senha.atualizar');
+Route::get('/', function () {
+    return view('autenticacao.login');
+})->name('/');
+
+
+
+
+
 Route::get('/recuperar-senha', function () {
-    return view('recuperarsenha.recuperarSenha');
+    return view('recuperarsenha.email');
 });
 Route::post('/verificar-recuperacao', [UsuarioController::class, 'verificarRecuperacao']);
 

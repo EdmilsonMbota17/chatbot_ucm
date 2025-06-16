@@ -18,33 +18,29 @@ class UsuarioController extends Controller
         return view('usuario.create');
     }
 
-    public function store(Request $request)
+    public function registrar(Request $request)
     {
         $request->validate([
             'email' => 'required|email|unique:usuario',
             'senha' => 'required|min:6',
         ]);
-        dd($request->all());
 
         Usuario::create([
             'email' => $request->email,
-            'senha' => bcrypt($request->senha),
-            'trocar_perfil' => 1,
-            'trocar_senha' => 1,
-            'modo_noturno' => 'diurno',
+            'senha' => ($request->senha),
             'nome' => $request->nome,
-            'pergunta_recuperacao' => $request->pergunta_recuperacao,
-            'resposta_recuperacao' => bcrypt($request->resposta_recuperacao),
+            'pergunta_recuperacao' => ($request->pergunta_recuperacao),
+            'resposta_recuperacao' => ($request->resposta_recuperacao),
         ]);
 
 
-        return redirect()->route('usuarios.index')->with('success', 'Usuário cadastrado com sucesso!');
+        return redirect('/')->with('success', 'Conta criada com sucesso! Faça login.');
     }
 
     public function verificarRecuperacao(Request $request)
     {
         // Debug inicial
-       // Verifique se os dados estão chegando corretamente
+         // Verifique se os dados estão chegando corretamente
 
         $usuario = Usuario::where('email', trim($request->email))->first();
 
@@ -63,4 +59,9 @@ class UsuarioController extends Controller
 
         return redirect()->route('alterarSenha', ['email' => $usuario->email]);
     }
+
+
+
+
 }
+

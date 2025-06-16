@@ -161,10 +161,10 @@
     <ul class="sidebar-menu">
         <!-- Outras opções podem ser adicionadas aqui -->
     </ul>
-    <div class="profile-section" onclick="openProfile()">
+    {{-- <div class="profile-section" onclick="openProfile()">
         <div class="profile-icon">👤</div>
         <p>Perfil</p>
-    </div>
+    </div> --}}
 </div>
 
 <!-- Área de Chat -->
