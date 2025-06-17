@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>Página de Chat - Estilo IA</title>
     <!-- CSS do Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap @5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             background-color: #f8f9fa;
@@ -35,7 +37,7 @@
             background-color: #ffffff;
             box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
             position: fixed;
-            top: 60px; /* Abaixo da navbar */
+            top: 60px;
             bottom: 0;
             left: 0;
             overflow-y: auto;
@@ -65,25 +67,11 @@
         .sidebar-menu li:hover {
             background-color: #e9ecef;
         }
-        .profile-section {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            padding: 20px;
-            text-align: center;
-            background-color: #f8f9fa;
-            border-top: 1px solid #e9ecef;
-            cursor: pointer;
-        }
-        .profile-icon {
-            font-size: 1.5em;
-            color: #0d6efd;
-        }
         .chat-container {
             margin-left: 250px;
-            margin-top: 60px; /* Abaixo da navbar */
+            margin-top: 60px;
             padding: 20px;
-            height: calc(100vh - 160px); /* Ajustado para acomodar a navbar */
+            height: calc(100vh - 160px);
             overflow-y: auto;
             transition: margin-left 0.3s ease-in-out;
         }
@@ -157,64 +145,53 @@
 
 <!-- Barra Lateral -->
 <div class="sidebar" id="sidebar">
-    <div class="sidebar-header">Assistente UCM</div>
+    <div class="sidebar-header">Menu</div>
     <ul class="sidebar-menu">
-        <!-- Outras opções podem ser adicionadas aqui -->
+        <!-- Pode adicionar links aqui -->
     </ul>
-    {{-- <div class="profile-section" onclick="openProfile()">
-        <div class="profile-icon">👤</div>
-        <p>Perfil</p>
-    </div> --}}
 </div>
 
 <!-- Área de Chat -->
 <div class="chat-container" id="chat-container">
     <div class="welcome-message" id="welcome-message">
-        Olá {{session('nome')}}! Como posso ajudar você hoje?
+        Olá {{ session('nome') ?? 'Docente' }}! Como posso ajudar você hoje?
     </div>
+
     <div class="suggestion-buttons" id="suggestion-buttons">
         <h4>Sugestões:</h4><br>
         <button onclick="selectSuggestion('Horario de aulas e turmas')">Horario de aulas e turmas</button>
         <button onclick="selectSuggestion('Datas de Avaliações')">Datas de Avaliações</button>
         <button onclick="selectSuggestion('Datas de exames')">Datas de exames</button>
-        {{-- <button onclick="selectSuggestion('Marketing Digital')">Marketing Digital</button>
-        <button onclick="selectSuggestion('Finanças Pessoais')">Finanças Pessoais</button> --}}
+        <button onclick="selectSuggestion('Calendario de proprinas')">Calendario de propinas</button>
+        {{-- <button onclick="selectSuggestion('Finanças Pessoais')">Finanças Pessoais</button> --}}
     </div>
 </div>
 
 <!-- JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap @5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Função para rolar automaticamente para o final do chat
+
     function scrollToBottom() {
         const chatContainer = document.getElementById('chat-container');
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
-    // Função para selecionar uma sugestão
     async function selectSuggestion(suggestion) {
         const welcomeMessage = document.getElementById('welcome-message');
-        if (welcomeMessage) {
-            welcomeMessage.remove();
-        }
+        if (welcomeMessage) welcomeMessage.remove();
 
         const suggestionButtons = document.getElementById('suggestion-buttons');
-        if (suggestionButtons) {
-            suggestionButtons.remove();
-        }
+        if (suggestionButtons) suggestionButtons.remove();
 
         const chatContainer = document.getElementById('chat-container');
 
-        // Adiciona a mensagem do usuário ao chat
         const userMessageDiv = document.createElement('div');
         userMessageDiv.className = 'message user';
         userMessageDiv.innerHTML = `<p><strong>Você:</strong> ${suggestion}</p>`;
         chatContainer.appendChild(userMessageDiv);
 
-        // Rola para o final do chat
         scrollToBottom();
 
-        // Indicador de que a IA está digitando
         const typingIndicator = document.createElement('div');
         typingIndicator.className = 'message ai typing-indicator';
         typingIndicator.id = 'typing-indicator';
@@ -222,52 +199,41 @@
         chatContainer.appendChild(typingIndicator);
         scrollToBottom();
 
-        const csrfToken = '{{ csrf_token() }}';
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
         try {
-            const response = await fetch('/chate', {
+            const response = await fetch('/docente-pergunta', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json',
                     'X-CSRF-TOKEN': csrfToken
                 },
-                body: JSON.stringify({
-                    message: suggestion
-                })
+                body: JSON.stringify({ message: suggestion })
             });
 
             if (!response.ok) throw new Error('Erro na resposta da API');
 
             const data = await response.json();
 
-            // Remove indicador de digitação
             document.getElementById('typing-indicator').remove();
 
-            // Adiciona resposta da IA
             const aiMessageDiv = document.createElement('div');
             aiMessageDiv.className = 'message ai';
             aiMessageDiv.innerHTML = `<p><strong>UCM:</strong> ${data.response}</p>`;
             chatContainer.appendChild(aiMessageDiv);
-
         } catch (error) {
             console.error('Erro:', error);
-            document.getElementById('typing-indicator').remove();
+            const typing = document.getElementById('typing-indicator');
+            if (typing) typing.remove();
             const errorDiv = document.createElement('div');
             errorDiv.className = 'message ai';
-            errorDiv.innerHTML = '<p><strong>UCM:</strong> Desculpe, ocorreu um erro ao processar sua mensagem.</p>';
+            errorDiv.innerHTML = '<p><strong>UCM:</strong> Desculpe, ocorreu um erro ao processar sua solicitação.</p>';
             chatContainer.appendChild(errorDiv);
         }
 
-        // Rola para o final do chat novamente
         scrollToBottom();
     }
 
-    // Função para abrir o perfil
-    function openProfile() {
-        window.location.href = "{{ route('perfil') }}";
-    }
-
-    // Função para alternar a barra lateral
     function toggleSidebar() {
         const sidebar = document.getElementById('sidebar');
         const chatContainer = document.getElementById('chat-container');
@@ -275,5 +241,8 @@
         chatContainer.classList.toggle('collapsed');
     }
 </script>
+
+</script>
 </body>
 </html>
+

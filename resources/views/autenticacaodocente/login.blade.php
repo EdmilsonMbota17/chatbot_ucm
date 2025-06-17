@@ -63,10 +63,10 @@
                 <label for="password" class="form-label">Senha</label>
                 <input type="password" name="senha" class="form-control" id="password" placeholder="Digite sua senha" required>
             </div>
-            <div class="mb-3 form-check">
+            {{-- <div class="mb-3 form-check">
                 <input type="checkbox" class="form-check-input" id="rememberMe">
                 <label class="form-check-label" for="rememberMe">Lembrar-me</label>
-            </div>
+            </div> --}}
             <button type="submit" class="btn btn-primary btn-login">Entrar</button>
             <a href="{{url('teste')}}" class="forgot-password d-block mt-3">Esqueceu sua senha?</a>
         </form>
