@@ -31,11 +31,12 @@ class ChatController extends Controller
         }
 
         return response()->json([
-            'response' => $result['answer'],
+            'response' => $result['choices'][0]['message']['content'] ?? 'Sem resposta',
             'usage' => $result['usage'] ?? [],
         ]);
     }
 }
+
 
 
 

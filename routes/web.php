@@ -99,7 +99,7 @@ Route::post('/verificar-recuperacao', [UsuarioController::class, 'verificarRecup
 
 Route::get('/documents/{id}', [DocumentController::class, 'show']);
 
-Route::post('/docente-pergunta', [ChatController::class, 'sendMessage'])->name('docente.pergunta');
+// Route::post('/docente-pergunta', [ChatController::class, 'sendMessage'])->name('docente.pergunta');
 Route::post('/docenteautentica', [AutenticacaoController::class, 'autenticardocente']);
 Route::get('/docentelogin', [AutenticacaoController::class, 'indexdocente']);
 Route::get('/chatdocente', function () {
