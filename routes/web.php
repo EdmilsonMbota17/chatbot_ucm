@@ -102,7 +102,7 @@ Route::get('/', function () {
 
 Route::get('/login-secretaria', [SecretariaController::class, 'indexSecretaria'])->name('secretaria.login');
 
-Route::post('/secretariaautentica', [SecretariaController::class, 'autenticarSecretaria'])->name('secretaria.login.post');
+Route::post('/secretariaautentica', [SecretariaController::class, 'login'])->name('secretaria.login.post');
 Route::get('/documentos', function () {
     return view('secretaria.index');
 })->name('secretaria.index');
