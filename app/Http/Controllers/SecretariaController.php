@@ -24,7 +24,7 @@ class SecretariaController extends Controller
         // Exemplo básico de verificação
         if ($request->email === 'secretaria@ucm.ac.mz' && $request->senha === '123456') {
             session(['secretaria_logada' => true]);
-            return redirect('/painel-secretaria')->with('success', 'Login realizado com sucesso!');
+            return redirect('/documentos')->with('success', 'Login realizado com sucesso!');
         }
 
         return back()->with('error', 'Credenciais inválidas.');
