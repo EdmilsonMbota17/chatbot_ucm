@@ -5,10 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Docente;
 use App\Models\Document;
-use Illuminate\Support\Facades\Http;
+use App\Models\Conversation;
+use App\Services\DeepSeekService;
 
 class DocenteController extends Controller
 {
+    protected $deepSeekService;
+
+    // Injetando o DeepSeekService no construtor
+    public function __construct(DeepSeekService $deepSeekService)
+    {
+        $this->deepSeekService = $deepSeekService;
+    }
+
     // Listar todos os docentes
     public function index()
     {
@@ -40,12 +49,42 @@ class DocenteController extends Controller
         return redirect()->route('docentes.index')->with('success', 'Docente cadastrado com sucesso!');
     }
 
+    // Função para responder perguntas via IA para o docente
+    public function pergunta(Request $request)
+{
+    try {
+        $request->validate([
+            'message' => 'required|string',
+        ]);
 
+        $user_message = $request->message;
+        $docente_id = session('docente_id'); // Ajuste conforme sua sessão
 
+        $documentos = Document::all();
+        $contexto = $documentos->pluck('text_content')->implode("\n\n");
 
+        $prompt = "Com base nesse conteúdo: \n$contexto\n\nPergunta: $user_message";
+
+        $response = $this->deepSeekService->chat($prompt);
+
+        $aiResponse = $response['choices'][0]['message']['content'] ?? 'Sem resposta';
+
+        Conversation::create([
+            'docente_id' => $docente_id,
+            'user_message' => $user_message,
+            'ai_response' => $aiResponse,
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'response' => $aiResponse,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+        ], 500);
+    }
 }
-
-
-
-
-
+}

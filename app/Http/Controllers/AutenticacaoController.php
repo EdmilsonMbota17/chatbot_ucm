@@ -69,5 +69,34 @@ class AutenticacaoController extends Controller
 
         return redirect()->to('/chatdocente')->with('success', 'Login realizado com sucesso!');
     }
+
+    // Página de login para secretaria
+public function indexSecretaria()
+{
+    return view('autenticasecretaria.login');
+}
+
+// Autenticação para secretaria
+public function autenticarSecretaria(Request $request)
+{
+    $request->validate([
+        'email' => 'required|email',
+        'senha' => 'required',
+    ]);
+
+    $secretaria = Secretaria::where('email', $request->email)->first();
+
+    if (!$secretaria) {
+        return back()->withErrors(['email' => 'Usuário não encontrado.']);
+    }
+
+    if ($request->senha !== $secretaria->senha) {
+        return back()->withErrors(['senha' => 'Senha incorreta.']);
+    }
+
+    session(['nome' => $secretaria->nome]);
+
+    return redirect()->to('/documentos')->with('success', 'Login realizado com sucesso!');
+}
 }
 

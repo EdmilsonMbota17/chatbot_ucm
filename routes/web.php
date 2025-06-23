@@ -10,6 +10,7 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\PerguntaDocumentoController;
 use App\Http\Controllers\DocenteController;
 use App\Http\Controllers\SenhaController;
+use App\Http\Controllers\SecretariaController;
 
 Route::get('/chat', function () {
     return view('conversa.index');
@@ -68,7 +69,17 @@ Route::apiResource('documents', DocumentController::class)->except(['update']);
 Route::post('/documents/{document}/query', [DocumentController::class, 'query']);
 Route::get('/documento/pesquisar', [DocumentController::class, 'search']);
 
+Route::get('/documentos', function () {
+    return view('secretaria.index');
+})->name('secretaria.index');
+
+
+
+
 // Mostrar o formulário de cadastro
+
+
+
 Route::get('/criar-conta', function () {
     return view('criar-conta.criarconta');
 })->name('criar-conta');
@@ -89,7 +100,12 @@ Route::get('/', function () {
 })->name('/');
 
 
+Route::get('/login-secretaria', [SecretariaController::class, 'indexSecretaria'])->name('secretaria.login');
 
+Route::post('/secretariaautentica', [SecretariaController::class, 'autenticarSecretaria'])->name('secretaria.login.post');
+Route::get('/documentos', function () {
+    return view('secretaria.index');
+})->name('secretaria.index');
 
 
 Route::get('/recuperar-senha', function () {
@@ -99,8 +115,14 @@ Route::post('/verificar-recuperacao', [UsuarioController::class, 'verificarRecup
 
 Route::get('/documents/{id}', [DocumentController::class, 'show']);
 
+Route::post('/docente-pergunta', [DocenteController::class, 'pergunta'])->name('docente.pergunta');
+
 Route::post('/docenteautentica', [AutenticacaoController::class, 'autenticardocente']);
 Route::get('/docentelogin', [AutenticacaoController::class, 'indexdocente']);
 Route::get('/chatdocente', function () {
     return view('conversadocente.index');
+
+
+
+
 });

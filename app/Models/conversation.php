@@ -13,7 +13,8 @@ class Conversation extends Model
     protected $fillable = [
         'usuario_id',
         'user_message',
-        'ai_response'
+        'ai_response',
+        'docente_id'
     ];
 }
 

@@ -79,6 +79,9 @@
             <div class="link-container">
                 <a href="{{ url('criar-conta') }}" class="text-primary">Criar uma conta</a>
                 <a href="{{ url('recuperar-senha') }}" class="text-primary">Esqueceu sua senha?</a>
+                <a href="{{ url('/docentelogin') }}" class="text-primary">Docente ?</a>
+
+                <a href="{{ url('recuperar-senha') }}" class="text-primary"> Secretaria </a>
             </div>
         </form>
     </div>
