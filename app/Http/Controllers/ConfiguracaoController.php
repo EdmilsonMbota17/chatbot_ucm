@@ -16,22 +16,25 @@ class ConfiguracaoController extends Controller
        }
 
        // Alterar senha
-    public function alterarSenha(Request $request)
-    {
-        $request->validate([
-            'senha_atual' => 'required',
-            'nova_senha' => 'required|min:6|confirmed',
-        ]);
+       public function atualizarSenha(Request $request, $id)
+       {
+           $request->validate([
+               'senha_atual' => 'required',
+               'nova_senha' => 'required|min:6|confirmed',
+           ]);
 
-        $usuario = Usuario::find(session('usuario_id'));
+           $usuario = Usuario::findOrFail($id);
 
-        if (!password_verify($request->senha_atual, $usuario->senha)) {
-            return back()->withErrors(['senha_atual' => 'Senha atual incorreta.']);
-        }
+           if ($usuario->senha !== $request->senha_atual) {
+               return back()->withErrors(['senha_atual' => 'Senha atual incorreta.']);
+           }
 
-        $usuario->update(['senha' => bcrypt($request->nova_senha)]);
-        return redirect()->route('perfil')->with('success', 'Senha alterada com sucesso!');
-    }
+           $usuario->senha = $request->nova_senha;
+           $usuario->save();
+
+           return redirect()->route('perfil')->with('success', 'Senha alterada com sucesso.');
+       }
+
 
     // Alterar foto de perfil
     public function alterarFotoPerfil(Request $request)

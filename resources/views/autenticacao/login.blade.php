@@ -81,7 +81,7 @@
                 <a href="{{ url('recuperar-senha') }}" class="text-primary">Esqueceu sua senha?</a>
                 <a href="{{ url('/docentelogin') }}" class="text-primary">Docente ?</a>
 
-                <a href="{{ url('recuperar-senha') }}" class="text-primary"> Secretaria </a>
+                <a href="{{ url('/login-secretaria') }}" class="text-primary"> Secretaria </a>
             </div>
         </form>
     </div>

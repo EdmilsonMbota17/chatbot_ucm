@@ -25,6 +25,7 @@ Route::post('autenticar', [AutenticacaoController::class, 'autenticar']);
 
 // Rota para a página de perfil/configurações
 Route::get('/perfil', [ConfiguracaoController::class, 'index'])->name('perfil');
+Route::post('/senha.atualizar/{id}', [ConfiguracaoController::class, 'atualizarSenha'])->name('senha.atualizar');
 
 
 // Rotas para alterar senha
@@ -72,6 +73,40 @@ Route::get('/documento/pesquisar', [DocumentController::class, 'search']);
 Route::get('/documentos', function () {
     return view('secretaria.index');
 })->name('secretaria.index');
+
+
+
+
+// Painel do usuário comum
+Route::middleware(['verificar.sessao'])->get('/chat', function () {
+    return view('conversa.index'); // Ajuste conforme a view correta
+})->name('usuario.chat');
+
+// Painel do docente
+Route::middleware(['verificar.sessao'])->get('/chatdocente', function () {
+    return view('conversadocente.index'); // Ajuste conforme a view correta
+})->name('docente.chat');
+
+// Página de upload de PDF pela secretaria
+Route::middleware(['verificar.sessao'])->get('/secretaria/upload', function () {
+    return view('secretaria.index'); // Ajuste conforme sua view
+})->name('secretaria.upload');
+
+// Outras rotas internas protegidas...
+// Exemplo:
+Route::middleware(['verificar.sessao'])->post('/upload-pdf', [App\Http\Controllers\PDFController::class, 'upload'])->name('pdf.upload');
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
