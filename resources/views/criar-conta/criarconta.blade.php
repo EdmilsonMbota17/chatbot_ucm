@@ -39,7 +39,7 @@
 <div class="container">
     <div class="register-container">
         <h2>Criar Conta</h2>
-        <form action="{{ route('registrar') }}" method="POST">
+        <form action="{{ route('criar-conta.salvar') }}" method="POST">
             @csrf
             <div class="mb-3">
                 <label for="nome" class="form-label">Nome</label>

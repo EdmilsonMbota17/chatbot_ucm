@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Usuario; // Importação correta do Model
+use App\Models\Usuario;
 
 class UsuarioController extends Controller
 {
@@ -20,6 +20,7 @@ class UsuarioController extends Controller
 
     public function registrar(Request $request)
     {
+
         $request->validate([
             'email' => 'required|email|unique:usuario',
             'senha' => 'required|min:6',
@@ -59,6 +60,40 @@ class UsuarioController extends Controller
 
         return redirect()->route('alterarSenha', ['email' => $usuario->email]);
     }
+
+    public function alterarSenha(Request $request)
+{
+    $usuarioId = session('usuario_id');
+    $usuario = Usuario::find($usuarioId);
+
+    if (!$usuario) {
+        return back()->withErrors(['Usuário não encontrado.']);
+    }
+
+    $senhaAtual = $request->input('senha_atual');
+    $novaSenha = $request->input('nova_senha');
+    $confirmarSenha = $request->input('nova_senha_confirmation');
+
+    // Verifica se a senha atual é igual à que está no banco (texto puro)
+    if ($senhaAtual !== $usuario->senha) {
+        return back()->withErrors(['A senha atual está incorreta.']);
+    }
+
+    if ($novaSenha !== $confirmarSenha) {
+        return back()->withErrors(['A nova senha e a confirmação não coincidem.']);
+    }
+
+    // Atualiza a senha no banco (sem hash)
+    $usuario->senha = $novaSenha;
+    $usuario->save();
+
+    return back()->with('success', 'Senha alterada com sucesso!');
+}
+public function logout()
+{
+    session()->flush(); // Remove todos os dados da sessão
+    return redirect('/')->with('success', 'Sessão encerrada com sucesso.');
+}
 
 
 

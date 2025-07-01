@@ -18,6 +18,7 @@ class ConfiguracaoController extends Controller
        // Alterar senha
        public function atualizarSenha(Request $request, $id)
        {
+
            $request->validate([
                'senha_atual' => 'required',
                'nova_senha' => 'required|min:6|confirmed',
@@ -32,7 +33,7 @@ class ConfiguracaoController extends Controller
            $usuario->senha = $request->nova_senha;
            $usuario->save();
 
-           return redirect()->route('perfil')->with('success', 'Senha alterada com sucesso.');
+           return redirect()->url('/perfil')->with('success', 'Senha alterada com sucesso.');
        }
 
 

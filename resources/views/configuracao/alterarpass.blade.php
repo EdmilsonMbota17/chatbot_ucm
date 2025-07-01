@@ -15,10 +15,20 @@
     </style>
 </head>
 <body>
+
+    @if(session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
     <div class="container mt-5">
         <h1 class="mb-4">Alterar Senha</h1>
+        <?php
+            $id = session('usuario_id');
+        ?>
+        <form action="{{ url('/perfil') }}" method="POST">
 
-        <form action="{{ url('senha.atualizar', ['id' => $usuario->id]) }}" method="POST">
+
             @csrf
             <div class="mb-3">
                 <label for="senha_atual" class="form-label">Senha Atual</label>
@@ -33,10 +43,12 @@
             </div>
 
             <div class="mb-3">
-                <label for="confirmar_senha" class="form-label">Confirmar Nova Senha</label>
-                <input type="password" name="confirmar_senha" id="confirmar_senha" class="form-control" required>
-                <small class="password-toggle" onclick="togglePassword('confirmar_senha')">Mostrar Senha</small>
-            </div>
+                <div class="mb-3">
+                    <label for="confirmar_senha" class="form-label">Confirmar Nova Senha</label>
+                    <input type="password" name="nova_senha_confirmation" id="confirmar_senha" class="form-control" required>
+                    <small class="password-toggle" onclick="togglePassword('confirmar_senha')">Mostrar Senha</small>
+                </div>
+
 
             <button type="submit" class="btn btn-primary">Alterar Senha</button>
             <a href="{{ route('perfil') }}" class="btn btn-secondary">Voltar</a>

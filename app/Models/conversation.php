@@ -16,7 +16,14 @@ class Conversation extends Model
         'ai_response',
         'docente_id'
     ];
+
+    public function usuario()
+{
+    return $this->belongsTo(Usuario::class, 'usuario_id');
 }
+
+}
+
 
 
 

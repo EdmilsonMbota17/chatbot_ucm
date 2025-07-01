@@ -11,10 +11,10 @@ use App\Http\Controllers\PerguntaDocumentoController;
 use App\Http\Controllers\DocenteController;
 use App\Http\Controllers\SenhaController;
 use App\Http\Controllers\SecretariaController;
+use App\Http\Middleware\VerificarSessao;
 
-Route::get('/chat', function () {
-    return view('conversa.index');
-});
+
+Route::get('/chat', [ChatController::class, 'index']);
 
 
 Route::get('/', [AutenticacaoController::class, 'index']);
@@ -25,7 +25,7 @@ Route::post('autenticar', [AutenticacaoController::class, 'autenticar']);
 
 // Rota para a página de perfil/configurações
 Route::get('/perfil', [ConfiguracaoController::class, 'index'])->name('perfil');
-Route::post('/senha.atualizar/{id}', [ConfiguracaoController::class, 'atualizarSenha'])->name('senha.atualizar');
+Route::post('/senha_atualizar/{id}', [ConfiguracaoController::class, 'atualizarSenha'])->name('senha.atualizar');
 
 
 // Rotas para alterar senha
@@ -35,10 +35,10 @@ Route::get('/perfil/alterar-senha', function () {
 Route::post('/alterar-senha', [ConfiguracaoController::class, 'alterarSenha'])->name('alterar.senha'); // Processamento
 
 // Rotas para alterar foto de perfil
-Route::get('/perfil/alterar-foto', function () {
-    return view('configuracao.alterarperfil'); // Nome da sua view
-})->name('alterar.foto.form'); // Página do formulário
-Route::post('/alterar-foto', [ConfiguracaoController::class, 'alterarFotoPerfil'])->name('alterar.foto'); // Processamento
+// Route::get('/perfil/alterar-foto', function () {
+//     return view('configuracao.alterarperfil'); // Nome da sua view
+// })->name('alterar.foto.form'); // Página do formulário
+// Route::post('/alterar-foto', [ConfiguracaoController::class, 'alterarFotoPerfil'])->name('alterar.foto'); // Processamento
 
 // Rotas para alterar tema
 Route::get('/perfil/alterar-tema', function () {
@@ -58,6 +58,8 @@ if (isset($result['success'])) {
 
 }
 });
+
+//Rotas para update de documentos
 Route::post('/documento/{id}/perguntar', [PerguntaDocumentoController::class, 'perguntar']);
 
 Route::post('/upload-pdf', [DocumentController::class, 'store'])->name('document.upload');
@@ -69,7 +71,6 @@ Route::post('/documento/{documentId}/perguntar', [DeepseekController::class, 'pe
 Route::apiResource('documents', DocumentController::class)->except(['update']);
 Route::post('/documents/{document}/query', [DocumentController::class, 'query']);
 Route::get('/documento/pesquisar', [DocumentController::class, 'search']);
-
 Route::get('/documentos', function () {
     return view('secretaria.index');
 })->name('secretaria.index');
@@ -77,24 +78,6 @@ Route::get('/documentos', function () {
 
 
 
-// Painel do usuário comum
-Route::middleware(['verificar.sessao'])->get('/chat', function () {
-    return view('conversa.index'); // Ajuste conforme a view correta
-})->name('usuario.chat');
-
-// Painel do docente
-Route::middleware(['verificar.sessao'])->get('/chatdocente', function () {
-    return view('conversadocente.index'); // Ajuste conforme a view correta
-})->name('docente.chat');
-
-// Página de upload de PDF pela secretaria
-Route::middleware(['verificar.sessao'])->get('/secretaria/upload', function () {
-    return view('secretaria.index'); // Ajuste conforme sua view
-})->name('secretaria.upload');
-
-// Outras rotas internas protegidas...
-// Exemplo:
-Route::middleware(['verificar.sessao'])->post('/upload-pdf', [App\Http\Controllers\PDFController::class, 'upload'])->name('pdf.upload');
 
 
 
@@ -104,6 +87,8 @@ Route::middleware(['verificar.sessao'])->post('/upload-pdf', [App\Http\Controlle
 
 
 
+
+Route::get('/chat/historico', [ChatController::class, 'historico']);
 
 
 
@@ -118,7 +103,9 @@ Route::middleware(['verificar.sessao'])->post('/upload-pdf', [App\Http\Controlle
 Route::get('/criar-conta', function () {
     return view('criar-conta.criarconta');
 })->name('criar-conta');
+Route::post('/criar-conta', [UsuarioController::class, 'registrar'])->name('criar-conta.salvar');
 
+Route::post('/perfil', [UsuarioController::class, 'alterarSenha'])->name('perfil');
 
 
 // Processar o envio do formulário de cadastro
@@ -158,6 +145,14 @@ Route::get('/chatdocente', function () {
     return view('conversadocente.index');
 
 
+// Usuário
+Route::get('/logoutusuario', [UsuarioController::class, 'logout'])->name('usuario.logout');
 
+// Docente
+Route::post('/logout_docente', [DocenteController::class, 'logout'])->name('logout.docente');
+
+
+// Secretaria
+Route::get('/logoutsecretaria', [SecretariaController::class, 'logout'])->name('secretaria.logout');
 
 });

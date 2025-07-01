@@ -25,6 +25,10 @@ class Usuario extends Model
         'resposta_recuperacao',
     ];
 
+    public function conversas()
+{
+    return $this->hasMany(Conversation::class, 'usuario_id');
+}
 
 
 }

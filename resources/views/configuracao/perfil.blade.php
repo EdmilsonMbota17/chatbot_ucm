@@ -36,14 +36,14 @@
         <h1 class="text-center">Perfil</h1>
 
         <!-- Foto de Perfil -->
-        <div class="text-center mb-4">
+        {{-- <div class="text-center mb-4">
             <img src="{{ asset('storage/fotos-perfil/default.jpg') }}" alt="Foto de Perfil" id="profileImage" class="profile-img">
             <p class="mt-3">
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#alterarFotoModal">
                     Alterar Foto
                 </button>
             </p>
-        </div>
+        </div> --}}
 
         <!-- Menu de Configurações -->
         <div class="list-group mb-4 {{ session('modo') === 'diurno' ? 'bg-white' : 'bg-dark text-white' }}">
