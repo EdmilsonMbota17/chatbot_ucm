@@ -95,6 +95,19 @@ public function logout()
     return redirect('/')->with('success', 'Sessão encerrada com sucesso.');
 }
 
+public function atualizarSenha(Request $request, $id)
+{
+    $request->validate([
+        'nova_senha' => 'required|min:6|confirmed',
+    ]);
+
+    $usuario = Usuario::findOrFail($id);
+    $usuario->senha = $request->nova_senha; // ou use bcrypt($request->nova_senha) se estiver usando hash
+    $usuario->save();
+
+    return redirect('/')->with('success', 'Senha atualizada com sucesso!');
+}
+
 
 
 

@@ -115,10 +115,11 @@
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
 
           <!-- Este form envia o logout -->
-          <form id="logout-form" action="{{ url('/logout_docente') }}" method="POST">
-              @csrf
-              <button type="submit" class="btn btn-danger">Sim, Sair</button>
-          </form>
+
+
+            <a href="{{url('/logoutdocente')}}" type="button" class="btn btn-danger">Sim, Sair</a>
+
+
         </div>
       </div>
     </div>

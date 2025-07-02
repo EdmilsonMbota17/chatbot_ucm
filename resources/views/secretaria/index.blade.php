@@ -74,6 +74,13 @@
     </style>
 </head>
 <body>
+  <!-- Botão Logout -->
+<button type="button" class="btn btn-outline-danger btn-sm"
+style="position: fixed; top: 20px; right: 20px; z-index: 1050;"
+data-bs-toggle="modal" data-bs-target="#confirmLogoutModal">
+<i class="bi bi-box-arrow-right"></i> Sair
+</button>
+
 
 <div class="container">
     <h2>📤 Upload de Documento</h2>
@@ -142,6 +149,28 @@ function uploadPdf() {
     });
 }
 </script>
+<!-- Modal de Confirmação de Logout -->
+<div class="modal fade" id="confirmLogoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="logoutModalLabel">Encerrar Sessão</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          Tem certeza que deseja sair?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+
+          <a href="{{url('/logoutsecretaria')}}" type="button" class="btn btn-danger">Sim, Sair</a>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

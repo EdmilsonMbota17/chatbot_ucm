@@ -150,10 +150,17 @@
 </head>
 <body>
 
+
 <!-- Navbar -->
 <div class="navbar">
     <div class="navbar-brand">Assistente UCM</div>
 </div>
+
+<button type="button" class="btn btn-outline-danger btn-sm"
+        style="position: fixed; top: 10px; right: 10px; z-index: 1100;"
+        data-bs-toggle="modal" data-bs-target="#confirmLogoutModal">
+    <i class="bi bi-box-arrow-right"></i> Sair
+</button>
 
 <!-- Toggle Sidebar Button -->
 <button class="toggle-sidebar-btn" onclick="toggleSidebar()">☰</button>
@@ -172,6 +179,8 @@
     </div>
 
 </div>
+
+
 
 <!-- Chat area -->
 <div class="chat-container" id="chat-container">
@@ -345,7 +354,34 @@
     window.addEventListener('DOMContentLoaded', carregarHistorico);
 
 
+
 </script>
+
+<div class="modal fade" id="confirmLogoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="logoutModalLabel">Confirmar Logout</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          Tem certeza que deseja encerrar a sessão?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+
+          <!-- Este form envia o logout -->
+
+
+            <a href="{{url('/logoutusuario')}}" type="button" class="btn btn-danger">Sim, Sair</a>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 
 </body>
 </html>

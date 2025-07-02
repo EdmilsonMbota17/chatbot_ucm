@@ -25,7 +25,7 @@ Route::post('autenticar', [AutenticacaoController::class, 'autenticar']);
 
 // Rota para a página de perfil/configurações
 Route::get('/perfil', [ConfiguracaoController::class, 'index'])->name('perfil');
-Route::post('/senha_atualizar/{id}', [ConfiguracaoController::class, 'atualizarSenha'])->name('senha.atualizar');
+// Route::post('/senha_atualizar/{id}', [ConfiguracaoController::class, 'atualizarSenha'])->name('senha.atualizar');
 
 
 // Rotas para alterar senha
@@ -34,11 +34,7 @@ Route::get('/perfil/alterar-senha', function () {
 })->name('alterar.senha.form'); // Página do formulário
 Route::post('/alterar-senha', [ConfiguracaoController::class, 'alterarSenha'])->name('alterar.senha'); // Processamento
 
-// Rotas para alterar foto de perfil
-// Route::get('/perfil/alterar-foto', function () {
-//     return view('configuracao.alterarperfil'); // Nome da sua view
-// })->name('alterar.foto.form'); // Página do formulário
-// Route::post('/alterar-foto', [ConfiguracaoController::class, 'alterarFotoPerfil'])->name('alterar.foto'); // Processamento
+
 
 // Rotas para alterar tema
 Route::get('/perfil/alterar-tema', function () {
@@ -125,10 +121,10 @@ Route::get('/', function () {
 Route::get('/login-secretaria', [SecretariaController::class, 'indexSecretaria'])->name('secretaria.login');
 
 Route::post('/secretariaautentica', [SecretariaController::class, 'login'])->name('secretaria.login.post');
-Route::get('/documentos', function () {
-    return view('secretaria.index');
-})->name('secretaria.index');
+Route::get('/documentos', [SecretariaController::class, 'documentos'])->name('secretaria.documentos');
 
+
+Route::post('/senha.atualizar/{id}', [UsuarioController::class, 'atualizarSenha'])->name('senha.atualizar');
 
 Route::get('/recuperar-senha', function () {
     return view('recuperarsenha.email');
@@ -141,18 +137,14 @@ Route::post('/docente-pergunta', [DocenteController::class, 'pergunta'])->name('
 
 Route::post('/docenteautentica', [AutenticacaoController::class, 'autenticardocente']);
 Route::get('/docentelogin', [AutenticacaoController::class, 'indexdocente']);
-Route::get('/chatdocente', function () {
-    return view('conversadocente.index');
+Route::get('/chatdocente', [DocenteController::class, 'chatdocente']);
 
-
-// Usuário
 Route::get('/logoutusuario', [UsuarioController::class, 'logout'])->name('usuario.logout');
 
 // Docente
-Route::post('/logout_docente', [DocenteController::class, 'logout'])->name('logout.docente');
+Route::get('/logoutdocente', [DocenteController::class, 'logout'])->name('logout.docente');
 
 
 // Secretaria
 Route::get('/logoutsecretaria', [SecretariaController::class, 'logout'])->name('secretaria.logout');
 
-});

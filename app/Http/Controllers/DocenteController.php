@@ -93,4 +93,39 @@ public function logout()
     return redirect('/')->with('success', 'Sessão encerrada com sucesso.');
 }
 
+public function chatdocente()
+{
+    if (!session()->has('docente_id')) {
+        return redirect('/docentelogin')->with('error', 'Você precisa estar logado como usuário.');
+      }
+    else{
+        return view('conversadocente.index');
+
+    }
+}
+
+private function formatarResposta($texto)
+    {
+        // Remove negrito Markdown
+        $texto = preg_replace('/\*\*(.*?)\*\*/', '$1', $texto);
+
+        // Remove títulos markdown
+        $texto = preg_replace('/#+\s*(.*?)\n/', "$1\n", $texto);
+
+        // Remove \text{} do LaTeX
+        $texto = preg_replace('/\\\\text\{(.*?)\}/', '$1', $texto);
+
+        // Remove símbolos LaTeX \( \)
+        $texto = preg_replace('/\\\\[\(\[\{](.*?)\\\\[\)\]\}]/', '$1', $texto);
+
+        // Substitui \, por espaço
+        $texto = str_replace('\,', ' ', $texto);
+
+        // Destaca valores com MT
+        $texto = preg_replace('/([0-9]{1,3}(?:\.[0-9]{3})*,[0-9]{2})\s?MT/', '<strong>$1 MT</strong>', $texto);
+
+        // Substitui quebras de linha por <br>
+        return nl2br(trim($texto));
+    }
+
 }

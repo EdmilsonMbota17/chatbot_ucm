@@ -34,11 +34,10 @@ class AutenticacaoController extends Controller
 
         session([
             'nome' => $usuario->nome,
-            'modo' => $usuario->modo_noturno,
             'usuario_id' => $usuario->id,
         ]);
 
-        return redirect()->to('chat')->with('success', 'Login realizado com sucesso!');
+        return redirect()->to('/chat')->with('success', 'Login realizado com sucesso!');
     }
 
     // Página de login para docentes
@@ -66,6 +65,7 @@ class AutenticacaoController extends Controller
         }
 
         session(['nome' => $docente->nome]);
+        session(['docente_id' => $docente->id]);
 
         return redirect()->to('/chatdocente')->with('success', 'Login realizado com sucesso!');
     }
@@ -94,7 +94,11 @@ public function autenticarSecretaria(Request $request)
         return back()->withErrors(['senha' => 'Senha incorreta.']);
     }
 
-    session(['nome' => $secretaria->nome]);
+    // Somente aqui é seguro salvar na sessão
+    session([
+        'secretaria_id' => $secretaria->id,
+        'secretaria_nome' => $secretaria->nome ?? 'Secretaria'
+    ]);
 
     return redirect()->to('/documentos')->with('success', 'Login realizado com sucesso!');
 }
